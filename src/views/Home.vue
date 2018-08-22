@@ -1,18 +1,30 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <el-container>
+    <el-header>
+      <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" router>
+        <el-menu-item index="/customForm">自定义表单</el-menu-item>
+      </el-menu>
+    </el-header>
+    <el-main>
+      <router-view></router-view>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-
-export default {
-  name: "home",
-  components: {
-    HelloWorld
-  }
+  // @ is an alias to /src
+  
+  export default {
+    name: "home",
+    data() {
+      return {
+        activeIndex: "customForm"
+      }
+    },
+    methods: {
+      handleSelect(i) {
+        console.log('click select --- ', i);
+      }
+    }
 };
 </script>
