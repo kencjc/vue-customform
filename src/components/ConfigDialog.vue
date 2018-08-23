@@ -54,8 +54,8 @@
         cdVisible: this.visible,
         cdForm: this.form,
         formLabelWidth: "80px",
-        placeholderAllowedArray: ['text', 'number'],
-        optionsAllowedArray: ['radio', 'checkbox'],
+        placeholderAllowedArray: ['text', 'number', 'timepicker'],
+        optionsAllowedArray: ['radio', 'checkbox', 'select'],
         optionsDialogVisible: false,
         opForm: {},
         rules: { // 表单配置规则
