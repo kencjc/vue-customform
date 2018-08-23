@@ -13,9 +13,9 @@ export default new Router({
       component: Home,
       children: [
         {
-          path: '/customForm',
-          name: 'customForm',
-          component: CustomForm,
+          path: "/customForm",
+          name: "customForm",
+          component: CustomForm
         }
       ]
     },
