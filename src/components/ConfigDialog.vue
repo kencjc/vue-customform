@@ -78,10 +78,10 @@
       },
       form(val) {
         console.log('form', val);
-        
+  
         this.cdForm = val
         console.log('cdForm', this.cdForm);
-        
+  
       }
     },
     methods: {
@@ -89,13 +89,13 @@
       hideDialog() {
         this.$refs['cdForm'].clearValidate();
         console.log(this.cdForm);
-        
+  
         this.$emit('update:visible', false)
       },
-
+  
       // 关闭Options弹窗
       hideOptionsDialog() {
-        this.$refs['opForm'].clearValidate();
+        this.$refs['opForm'].resetFields();
         this.optionsDialogVisible = false;
       },
   
@@ -124,7 +124,7 @@
         this.$refs['opForm'].validate((valid) => {
           if (valid) {
             this.cdForm.options.push(Object.assign({}, this.opForm))
-            this.$refs['opForm'].clearValidate();
+            this.$refs['opForm'].resetFields();
             this.optionsDialogVisible = false;
           } else {
             return false;

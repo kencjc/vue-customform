@@ -9,11 +9,18 @@
           <draggable :clone="cloneData" :list="controls" :move="onMove" @update="dragEnd" :options="dragOptions">
             <transition-group class="drag-form" type="transition" tag="div">
               <el-form-item :label="el.name + '：'" v-for="(el, index) in controls" :key="index">
+                <!-- 文本输入框 -->
                 <el-input v-if="el.type === 'text'" size="small"></el-input>
+                <!-- 数组输入框 -->
                 <el-input v-else-if="el.type === 'number'" type="number" size="small"></el-input>
+                <!-- 单选框 -->
                 <el-radio-group v-else-if="el.type === 'radio'">
                   <el-radio v-for="o in el.options" :label="o.label" :key="o.label">{{o.name}}</el-radio>
                 </el-radio-group>
+                <!-- 复选框 -->
+                <el-checkbox-group v-else-if="el.type === 'checkbox'">
+                  <el-checkbox v-for="o in el.options" :label="o.label" :key="o.label">{{o.name}}</el-checkbox>
+                </el-checkbox-group>
                 <span v-else>{{el.type}}</span>
               </el-form-item>
             </transition-group>
@@ -31,16 +38,25 @@
             <transition-group class="drag-form" type="transition" tag="div">
               <el-form-item :label="el.name + '：'" v-for="(el, index) in curControls" :key="index" :required="el.required">
                 <el-row>
+                  <!-- 文本 -->
                   <el-col :span="18" v-if="el.type === 'text'">
                     <el-input :placeholder="el.placeholder" size="small"></el-input>
                   </el-col>
+                  <!-- 数字 -->
                   <el-col :span="18" v-else-if="el.type === 'number'">
                     <el-input :placeholder="el.placeholder" type="number" size="small"></el-input>
                   </el-col>
+                  <!-- 单选 -->
                   <el-col :span="18" v-else-if="el.type === 'radio'">
                     <el-radio-group>
                       <el-radio v-for="o in el.options" :label="o.label" :key="o.label">{{o.name}}</el-radio>
                     </el-radio-group>
+                  </el-col>
+                  <!-- 复选 -->
+                  <el-col :span="18" v-else-if="el.type === 'checkbox'">
+                    <el-checkbox-group>
+                      <el-checkbox v-for="o in el.options" :label="o.label" :key="o.label">{{o.name}}</el-checkbox>
+                    </el-checkbox-group>
                   </el-col>
                   <el-col :span="6" class="btn-group">
                     <el-button-group>
@@ -55,40 +71,14 @@
           </draggable>
         </el-form>
         <!-- <div v-for="(c,index) in controls" :key="index" class="text item">
-                                                            <el-col :span="8">
-                                                              <el-button class="controls-item">{{c.name}}</el-button>
-                                                            </el-col>
-                                                          </div> -->
+                                                                <el-col :span="8">
+                                                                  <el-button class="controls-item">{{c.name}}</el-button>
+                                                                </el-col>
+                                                              </div> -->
       </el-card>
     </el-col>
-    <config-dialog :visible.sync="dialogVisible" :form="dialogForm" @onOk="updateForm"/>
-    <!-- <el-dialog class="edit-dialog" title="表单配置" :visible.sync="dialogVisible">
-        <el-form ref="dialogForm" :model="dialogForm" :rules="rules">
-          <el-form-item label="名称" :label-width="formLabelWidth" prop="name">
-            <el-input v-model="dialogForm.name"></el-input>
-          </el-form-item>
-          <el-form-item label="提示语" :label-width="formLabelWidth" prop="placeholder" v-if="placeholderArray.indexOf(dialogForm.type) > -1">
-            <el-input v-model="dialogForm.placeholder"></el-input>
-          </el-form-item>
-          <el-form-item label="key值" :label-width="formLabelWidth" prop="key">
-            <el-input v-model="dialogForm.key"></el-input>
-          </el-form-item>
-          <el-form-item label="是否必填" :label-width="formLabelWidth" prop="required">
-            <el-switch v-model="dialogForm.required" active-color="#13ce66" inactive-color="#ff4949">
-            </el-switch>
-          </el-form-item>
-          <el-form-item label="选项" :label-width="formLabelWidth" prop="options">
-            <el-tag v-for="option in dialogForm.options" :key="option.label" closable @close="delOptions(option)">
-              {{option.name}}
-            </el-tag>
-    
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="onUpdate">确 定</el-button>
-        </div>
-      </el-dialog> -->
+    <!-- 配置表单弹窗 -->
+    <config-dialog :visible.sync="dialogVisible" :form="dialogForm" @onOk="updateForm" />
   </el-row>
 </template>
 
@@ -139,6 +129,13 @@
             type: "checkbox",
             name: "多选框",
             required: false,
+            options: [{
+              label: 1,
+              name: '选项一',
+            }, {
+              label: 2,
+              name: '选项2',
+            }]
           }
         ],
         dragOptions: { // 表单1配置
@@ -210,7 +207,7 @@
   
       updateForm(form) {
         console.log('update', form);
-        
+  
         this.curControls[this.dialogFormIndex] = Object.assign({}, form)
   
       },
