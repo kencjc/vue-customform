@@ -39,7 +39,7 @@
                   </el-col>
                   <el-col :span="18" v-else-if="el.type === 'radio'">
                     <el-radio-group>
-                    <el-radio v-for="o in el.options" :label="o.label" :key="o.label">{{o.name}}</el-radio>
+                      <el-radio v-for="o in el.options" :label="o.label" :key="o.label">{{o.name}}</el-radio>
                     </el-radio-group>
                   </el-col>
                   <el-col :span="6" class="btn-group">
@@ -55,44 +55,52 @@
           </draggable>
         </el-form>
         <!-- <div v-for="(c,index) in controls" :key="index" class="text item">
-                                                        <el-col :span="8">
-                                                          <el-button class="controls-item">{{c.name}}</el-button>
-                                                        </el-col>
-                                                      </div> -->
+                                                            <el-col :span="8">
+                                                              <el-button class="controls-item">{{c.name}}</el-button>
+                                                            </el-col>
+                                                          </div> -->
       </el-card>
     </el-col>
-  
-    <el-dialog class="edit-dialog" title="表单配置" :visible.sync="dialogVisible">
-      <el-form ref="dialogForm" :model="dialogForm" :rules="rules">
-        <el-form-item label="名称" :label-width="formLabelWidth" prop="name">
-          <el-input v-model="dialogForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="提示语" :label-width="formLabelWidth" prop="placeholder" v-if="placeholderArray.indexOf(dialogForm.type) > -1">
-          <el-input v-model="dialogForm.placeholder"></el-input>
-        </el-form-item>
-        <el-form-item label="key值" :label-width="formLabelWidth" prop="key">
-          <el-input v-model="dialogForm.key"></el-input>
-        </el-form-item>
-        <el-form-item label="是否必填" :label-width="formLabelWidth" prop="required">
-          <el-switch v-model="dialogForm.required" active-color="#13ce66" inactive-color="#ff4949">
-          </el-switch>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="onUpdate">确 定</el-button>
-      </div>
-    </el-dialog>
+    <config-dialog :visible.sync="dialogVisible" :form="dialogForm" @onOk="updateForm"/>
+    <!-- <el-dialog class="edit-dialog" title="表单配置" :visible.sync="dialogVisible">
+        <el-form ref="dialogForm" :model="dialogForm" :rules="rules">
+          <el-form-item label="名称" :label-width="formLabelWidth" prop="name">
+            <el-input v-model="dialogForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="提示语" :label-width="formLabelWidth" prop="placeholder" v-if="placeholderArray.indexOf(dialogForm.type) > -1">
+            <el-input v-model="dialogForm.placeholder"></el-input>
+          </el-form-item>
+          <el-form-item label="key值" :label-width="formLabelWidth" prop="key">
+            <el-input v-model="dialogForm.key"></el-input>
+          </el-form-item>
+          <el-form-item label="是否必填" :label-width="formLabelWidth" prop="required">
+            <el-switch v-model="dialogForm.required" active-color="#13ce66" inactive-color="#ff4949">
+            </el-switch>
+          </el-form-item>
+          <el-form-item label="选项" :label-width="formLabelWidth" prop="options">
+            <el-tag v-for="option in dialogForm.options" :key="option.label" closable @close="delOptions(option)">
+              {{option.name}}
+            </el-tag>
+    
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="onUpdate">确 定</el-button>
+        </div>
+      </el-dialog> -->
   </el-row>
 </template>
 
 <script>
   import draggable from "vuedraggable";
+  import configDialog from "@/components/ConfigDialog";
   
   export default {
     name: "customForm",
     components: {
-      draggable
+      draggable,
+      configDialog
     },
     data() {
       return {
@@ -107,26 +115,30 @@
         placeholderArray: ['text', 'number'],
         controls: [{
             type: "text",
-            name: "文本输入框"
+            name: "文本输入框",
+            required: false,
           },
           {
             type: "number",
-            name: "数字输入框"
+            name: "数字输入框",
+            required: false,
           },
           {
             type: "radio",
             name: "单选框",
-            options:[{
+            required: false,
+            options: [{
               label: 1,
               name: '选项一',
-            },{
+            }, {
               label: 2,
               name: '选项2',
             }]
           },
           {
             type: "checkbox",
-            name: "多选框"
+            name: "多选框",
+            required: false,
           }
         ],
         dragOptions: { // 表单1配置
@@ -167,10 +179,14 @@
     methods: {
       // 配置选中表单项
       onEdit(i) {
+        console.log(this.dialogVisible);
+  
         this.dialogForm = Object.assign({}, this.curControls[i]);
         this.dialogFormIndex = i;
         this.dialogVisible = true;
       },
+  
+      // 移除表单项前置操作
       beforeRemove(i) {
         this.$confirm('是否删除', '提示', {
           confirmButtonText: '确定',
@@ -185,30 +201,34 @@
           });
         });
       },
+  
+      // 移除表单项
       onRemove(i) {
         this.curControls.splice(i, 1);
       },
-      // 报错表单配置
-      onUpdate() {
-        this.$refs['dialogForm'].validate((valid) => {
-          if (valid) {
-            this.curControls[this.dialogFormIndex] = Object.assign({}, this.dialogForm)
-            this.dialogVisible = false;
-            this.resetDialogFormField();
-          } else {
-            return false;
-          }
-        });
+  
+  
+      updateForm(form) {
+        console.log('update', form);
+        
+        this.curControls[this.dialogFormIndex] = Object.assign({}, form)
   
       },
-      // 重置表单项校验状态
-      resetDialogFormField() {
-        this.$refs['dialogForm'].resetFields();
+      hideConfigDialog() {
+        console.log('hhh');
+  
+        this.dialogVisible = false;
       },
+  
+  
+  
+      // dragable组件克隆数据
       cloneData(original) {
         // 深拷贝对象，防止默认空对象被更改
         return JSON.parse(JSON.stringify(original));
       },
+  
+      // dragable组件拖拽事件
       onMove({
         relatedContext,
         draggedContext
@@ -220,6 +240,7 @@
         );
       },
   
+      // dragable组件拖拽事件
       onMove2({
         relatedContext,
         draggedContext
@@ -257,6 +278,9 @@
   .edit-dialog {
     .el-input {
       width: 300px;
+    }
+    .el-tag {
+      margin-right: 5px;
     }
   }
 </style>
