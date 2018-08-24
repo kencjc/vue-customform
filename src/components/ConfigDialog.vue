@@ -54,7 +54,7 @@
         cdVisible: this.visible,
         cdForm: this.form,
         formLabelWidth: "80px",
-        placeholderAllowedArray: ['text', 'number', 'timepicker'],
+        placeholderAllowedArray: ['text', 'number', 'timepicker', 'textarea'],
         optionsAllowedArray: ['radio', 'checkbox', 'select'],
         optionsDialogVisible: false,
         opForm: {},

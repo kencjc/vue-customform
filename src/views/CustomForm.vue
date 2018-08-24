@@ -32,6 +32,15 @@
                 <!-- 时间范围选择器 -->
                 <el-time-picker v-else-if="el.type === 'timerangepicker'" is-range>
                 </el-time-picker>
+                <!-- 日期选择器 -->
+                <el-date-picker v-else-if="el.type === 'datepicker'" type="date">
+                </el-date-picker>
+                <!-- 日期范围选择器 -->
+                <el-date-picker v-else-if="el.type === 'daterangepicker'" type="daterange">
+                </el-date-picker>
+                <!-- 文本域 -->
+                <el-input v-else-if="el.type === 'textarea'" type="textarea" :rows="2">
+                </el-input>
                 <span v-else>{{el.type}}</span>
               </el-form-item>
             </transition-group>
@@ -50,7 +59,6 @@
               <el-form-item :label="el.name + '：'" v-for="(el, index) in curControls" :key="index" :required="el.required">
                 <el-row>
                   <!-- 文本 -->
-                  
                   <el-col :span="18" v-if="el.type === 'text'">
                     <el-input :placeholder="el.placeholder" size="small"></el-input>
                   </el-col>
@@ -87,6 +95,22 @@
                     <el-time-picker is-range :placeholder="el.placeholder">
                     </el-time-picker>
                   </el-col>
+                  <!-- 日期选择器 -->
+                  <el-col :span="18" v-else-if="el.type === 'datepicker'">
+                    <el-date-picker type="date">
+                    </el-date-picker>
+                  </el-col>
+                  <!-- 日期范围选择器 -->
+                  <el-col :span="18" v-else-if="el.type === 'daterangepicker'">
+                    <el-date-picker type="daterange">
+                    </el-date-picker>
+                  </el-col>
+                  <!-- 文本域 -->
+                  <el-col :span="18" v-else-if="el.type === 'textarea'">
+                    <el-input type="textarea" :rows="2" :placeholder="el.placeholder">
+                    </el-input>
+                  </el-col>
+  
                   <el-col :span="6" class="btn-group">
                     <el-button-group>
                       <el-button type="text" icon="el-icon-edit" @click="onEdit(index)"></el-button>
@@ -100,10 +124,10 @@
           </draggable>
         </el-form>
         <!-- <div v-for="(c,index) in controls" :key="index" class="text item">
-                                                                                    <el-col :span="8">
-                                                                                      <el-button class="controls-item">{{c.name}}</el-button>
-                                                                                    </el-col>
-                                                                                  </div> -->
+                      <el-col :span="8">
+                        <el-button class="controls-item">{{c.name}}</el-button>
+                      </el-col>
+                    </div> -->
       </el-card>
     </el-col>
     <!-- 配置表单弹窗 -->
@@ -186,6 +210,21 @@
           {
             type: "timerangepicker",
             name: "时间范围",
+            required: false,
+          },
+          {
+            type: "datepicker",
+            name: "日期选择",
+            required: false,
+          },
+          {
+            type: "daterangepicker",
+            name: "日期范围",
+            required: false,
+          },
+          {
+            type: "textarea",
+            name: "文本域",
             required: false,
           }
         ],
