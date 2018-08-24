@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
 import CustomForm from "./views/CustomForm.vue";
+import Preview from "./views/Preview.vue";
 
 Vue.use(Router);
 
@@ -16,6 +17,11 @@ export default new Router({
           path: "/customForm",
           name: "customForm",
           component: CustomForm
+        },
+        {
+          path: "/preview",
+          name: "preview",
+          component: Preview
         }
       ]
     },

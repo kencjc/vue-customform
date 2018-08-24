@@ -22,7 +22,7 @@
                   <el-checkbox v-for="o in el.options" :label="o.label" :key="o.label">{{o.name}}</el-checkbox>
                 </el-checkbox-group>
                 <!-- 单项选择器 -->
-                <el-select v-else-if="el.type === 'select'">
+                <el-select value="" v-else-if="el.type === 'select'">
                   <el-option v-for="o in el.options" :key="o.label" :label="o.name" :value="o.label">
                   </el-option>
                 </el-select>
@@ -85,7 +85,7 @@
                   </el-col>
                   <!-- 单项选择 -->
                   <el-col :span="18" v-else-if="el.type === 'select'">
-                    <el-select>
+                    <el-select value="">
                       <el-option v-for="o in el.options" :key="o.label" :label="o.name" :value="o.label">
                       </el-option>
                     </el-select>
@@ -130,16 +130,14 @@
                     </el-button-group>
                   </el-col>
                 </el-row>
-                <!-- <span v-else>{{el.type}}</span> -->
               </el-form-item>
             </transition-group>
           </draggable>
         </el-form>
-        <!-- <div v-for="(c,index) in controls" :key="index" class="text item">
-                              <el-col :span="8">
-                                <el-button class="controls-item">{{c.name}}</el-button>
-                              </el-col>
-                            </div> -->
+        <el-row class="footer">
+          <el-button @click="resetForm">重置</el-button>
+          <el-button type="primary" @click="saveForm">保存</el-button>
+        </el-row>
       </el-card>
     </el-col>
     <!-- 配置表单弹窗 -->
@@ -150,7 +148,8 @@
 <script>
   import draggable from "vuedraggable";
   import configDialog from "@/components/ConfigDialog";
-  
+  import Util from "@/common/util";
+
   export default {
     name: "customForm",
     components: {
@@ -279,13 +278,11 @@
       };
     },
     mounted() {
-      console.log("mounted");
+      console.log("mounted", Util);
     },
     methods: {
       // 配置选中表单项
       onEdit(i) {
-        console.log(this.dialogVisible);
-  
         this.dialogForm = Object.assign({}, this.curControls[i]);
         this.dialogFormIndex = i;
         this.dialogVisible = true;
@@ -311,21 +308,25 @@
       onRemove(i) {
         this.curControls.splice(i, 1);
       },
-  
-  
+
+      // 更新表单
       updateForm(form) {
-        console.log('update', form);
-  
         this.curControls[this.dialogFormIndex] = Object.assign({}, form)
-  
       },
-      hideConfigDialog() {
-        console.log('hhh');
-  
-        this.dialogVisible = false;
+
+      // 重置表单
+      resetForm() {
+        this.curControls = [];
       },
-  
-  
+
+      // 保存
+      saveForm() {
+        this.curControls.forEach(item => {
+          console.log('item', item);
+          
+        })
+        Util.setStore('customForm', this.curControls)
+      },
   
       // dragable组件克隆数据
       cloneData(original) {
@@ -377,6 +378,10 @@
   }
   
   .btn-group {
+    text-align: center;
+  }
+
+  .footer {
     text-align: center;
   }
 </style>
