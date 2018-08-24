@@ -41,6 +41,11 @@
                 <!-- 文本域 -->
                 <el-input v-else-if="el.type === 'textarea'" type="textarea" :rows="2">
                 </el-input>
+                <!-- 上传 -->
+                <el-upload class="upload-demo" v-else-if="el.type === 'upload'" action="">
+                  <el-button size="small" type="primary">点击上传</el-button>
+                  <div slot="tip" class="el-upload__tip">{{el.placeholder}}</div>
+                </el-upload>
                 <span v-else>{{el.type}}</span>
               </el-form-item>
             </transition-group>
@@ -110,6 +115,13 @@
                     <el-input type="textarea" :rows="2" :placeholder="el.placeholder">
                     </el-input>
                   </el-col>
+                  <!-- 上传 -->
+                  <el-col :span="18" v-else-if="el.type === 'upload'">
+                    <el-upload class="upload-demo" action="">
+                      <el-button size="small" type="primary">点击上传</el-button>
+                      <div slot="tip" class="el-upload__tip">{{el.placeholder}}</div>
+                    </el-upload>
+                  </el-col>
   
                   <el-col :span="6" class="btn-group">
                     <el-button-group>
@@ -124,10 +136,10 @@
           </draggable>
         </el-form>
         <!-- <div v-for="(c,index) in controls" :key="index" class="text item">
-                      <el-col :span="8">
-                        <el-button class="controls-item">{{c.name}}</el-button>
-                      </el-col>
-                    </div> -->
+                              <el-col :span="8">
+                                <el-button class="controls-item">{{c.name}}</el-button>
+                              </el-col>
+                            </div> -->
       </el-card>
     </el-col>
     <!-- 配置表单弹窗 -->
@@ -226,6 +238,12 @@
             type: "textarea",
             name: "文本域",
             required: false,
+          },
+          {
+            type: "upload",
+            name: "上传",
+            required: false,
+            placeholder: "只能上传jpg/png文件，且不超过500kb"
           }
         ],
         dragOptions: { // 表单1配置
